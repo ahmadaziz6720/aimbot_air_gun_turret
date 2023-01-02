@@ -9,9 +9,29 @@ import argparse
 import cv2
 import imutils
 import time
-from serial import Serial
 
-esp32 = Serial(port='COM6', baudrate=250000, timeout=.1)
+# for serial communication
+from serial import Serial
+# esp32 = Serial(port='COM6', baudrate=250000, timeout=.1)
+
+# for motion prediction
+import numpy as np
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+
+regressor = LinearRegression()
+poly = PolynomialFeatures(degree=2)
+
+x_p = np.array([0]).reshape((-1, 1))
+y_p = np.array([0])
+
+x_parabola = poly.fit_transform(x_p)
+regressor.fit(x_parabola, y_p)
+
+# make np array int 300-600 every 5 point to predict
+x_pred = np.array([i for i in range(1, 600, 10)]).reshape((-1, 1))
+
+y_pred = regressor.predict(poly.fit_transform(x_pred))
 
 # def write_read(x):
 # 	esp32.write(x.encode())
@@ -93,17 +113,40 @@ while True:
 			cv2.circle(frame, center, 5, (0, 0, 255), -1)
 			# mapObjectPosition(int(x), int(y))
 			# print(str(int(x)) , str(int(y)))
-			gabung = str(int(x)) + "*" + str(int(y))
-			print(gabung)
+
+			x_p = np.append(x_p, int(x)).reshape((-1, 1))
+			y_p = np.append(y_p, int(y))
+
+			#print how many points we have
+			print("x_p = ", x_p, "y_p = ", y_p)
+
+			# gabung = str(int(x)) + "*" + str(int(y))
+			# print(gabung)
 			# value = esp32.write_read(gabung)
-			esp32.write(gabung.encode())
-			# time.sleep(0.01)
-			data = esp32.readline()
-			print(data)
+			# esp32.write(gabung.encode())
+			# # time.sleep(0.01)
+			# data = esp32.readline()
+			# print(data)
+		else:
+			# reset the points from the camera
+			x_p = np.array([0]).reshape((-1, 1))
+			y_p = np.array([0]).reshape((-1, 1))
 			
-            
+    # update the points from the camera
+	
+
+	x_parabola = poly.fit_transform(x_p)
+	regressor.fit(x_parabola, y_p)
+
+	# update the points from the prediction
+	y_pred = regressor.predict(poly.fit_transform(x_pred))
+
 	# update the points queue
 	pts.appendleft(center)
+
+	# make the point green color from the prediction
+	for i in range(len(x_pred)):
+		cv2.circle(frame, (int(x_pred[i]), int(y_pred[i])), 5, (0, 255, 0), -1)
 
     # loop over the set of tracked points
 	for i in range(1, len(pts)):
