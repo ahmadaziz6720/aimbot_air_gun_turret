@@ -16,7 +16,7 @@ import time
 from pySerialTransfer import pySerialTransfer as txfer
 link = txfer.SerialTransfer('COM6')
 link.open()
-time.sleep(2) 
+time.sleep(2)
 
 # for motion prediction
 import numpy as np
@@ -146,9 +146,22 @@ while True:
 
 			link.send(send_size)
 
+			while not link.available():
+				if link.status < 0:
+					if link.status == txfer.CRC_ERROR:
+						print('ERROR: CRC_ERROR')
+					elif link.status == txfer.PAYLOAD_ERROR:
+						print('ERROR: PAYLOAD_ERROR')
+					elif link.status == txfer.STOP_BYTE_ERROR:
+						print('ERROR: STOP_BYTE_ERROR')
+					else:
+						print('ERROR: {}'.format(link.status))
+
 			rec_list_  = link.rx_obj(obj_type=type(list_),
                                      obj_byte_size=list_size,
                                      list_format='i')
+
+			print('RCVD: {}'.format(rec_list_))
 
 			# gabung = str(int(x)) + "*" + str(int(y))
 			# print(gabung)
