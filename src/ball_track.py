@@ -11,8 +11,12 @@ import imutils
 import time
 
 # for serial communication
-from serial import Serial
+# from serial import Serial
 # esp32 = Serial(port='COM6', baudrate=250000, timeout=.1)
+from pySerialTransfer import pySerialTransfer as txfer
+link = txfer.SerialTransfer('COM6')
+link.open()
+time.sleep(2) 
 
 # for motion prediction
 import numpy as np
@@ -67,8 +71,16 @@ else:
 # allow the camera or video file to warm up
 time.sleep(5.0)
 
+list_ = [0, 0]
+str_ = " "
+float_ = 0.1
+
+send_size = 0
+
 # keep looping
 while True:
+	send_size = 0
+
 	# grab the current frame
 	frame = vs.read()
 	# handle the frame from VideoCapture or VideoStream
@@ -118,7 +130,25 @@ while True:
 			y_p = np.append(y_p, int(y))
 
 			#print how many points we have
-			print("x_p = ", x_p, "y_p = ", y_p)
+			# print("x_p = ", x_p, "y_p = ", y_p)
+
+			list_ = [int(x), int(y)]
+			list_size = link.tx_obj(list_)
+			send_size += list_size
+
+			# str_ = 'hello'
+			# str_size = link.tx_obj(str_, send_size) - send_size
+			# send_size += str_size
+
+			# float_ = 5.234
+			# float_size = link.tx_obj(float_, send_size) - send_size
+			# send_size += float_size
+
+			link.send(send_size)
+
+			rec_list_  = link.rx_obj(obj_type=type(list_),
+                                     obj_byte_size=list_size,
+                                     list_format='i')
 
 			# gabung = str(int(x)) + "*" + str(int(y))
 			# print(gabung)
@@ -133,8 +163,6 @@ while True:
 			y_p = np.array([0]).reshape((-1, 1))
 			
     # update the points from the camera
-	
-
 	x_parabola = poly.fit_transform(x_p)
 	regressor.fit(x_parabola, y_p)
 

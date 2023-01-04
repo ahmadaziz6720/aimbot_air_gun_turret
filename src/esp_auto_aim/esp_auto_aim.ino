@@ -1,4 +1,7 @@
 #include <Servo.h>
+#include "SerialTransfer.h"
+
+SerialTransfer myTransfer;
 
 Servo trig;
 Servo yaw;
@@ -24,8 +27,9 @@ int x;
 int y;
 
 void setup(){
-    Serial.begin(250000);
+    Serial.begin(115200);
     Serial.setTimeout(1);
+    myTransfer.begin(Serial);
     
     trig.attach(15);
     yaw.attach(2);
@@ -76,7 +80,14 @@ void loop(){
   //60  100
   //
 
-  
+  if(myTransfer.available())
+  {
+    // send all received data back to Python
+    for(uint16_t i=0; i < myTransfer.bytesRead; i++)
+      myTransfer.packet.txBuff[i] = myTransfer.packet.rxBuff[i];
+    
+    myTransfer.sendData(myTransfer.bytesRead);
+  }
   
 
 

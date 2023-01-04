@@ -5,7 +5,7 @@ int y;
 int i = 0;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(250000);
   Serial.setTimeout(1);
 }
 
