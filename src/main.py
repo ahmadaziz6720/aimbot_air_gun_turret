@@ -10,9 +10,7 @@ import cv2
 import imutils
 import time
 
-# for serial communication
-# from serial import Serial
-# esp32 = Serial(port='COM6', baudrate=250000, timeout=.1)
+# serial communication
 from pySerialTransfer import pySerialTransfer as txfer
 link = txfer.SerialTransfer('COM6')
 link.open()
@@ -36,12 +34,6 @@ regressor.fit(x_parabola, y_p)
 x_pred = np.array([i for i in range(1, 600, 10)]).reshape((-1, 1))
 
 y_pred = regressor.predict(poly.fit_transform(x_pred))
-
-# def write_read(x):
-# 	esp32.write(x.encode())
-# 	time.sleep(0.05)
-# 	data = esp32.readline()
-# 	return data
 
 def mapObjectPosition (x, y):
     print ("[INFO] Object Center coordinates at \
@@ -71,13 +63,6 @@ else:
 # allow the camera or video file to warm up
 time.sleep(5.0)
 
-list_ = [0, 0]
-str_ = " "
-float_ = 0.1
-
-send_size = 0
-
-# keep looping
 while True:
 	send_size = 0
 
@@ -136,14 +121,6 @@ while True:
 			list_size = link.tx_obj(list_)
 			send_size += list_size
 
-			# str_ = 'hello'
-			# str_size = link.tx_obj(str_, send_size) - send_size
-			# send_size += str_size
-
-			# float_ = 5.234
-			# float_size = link.tx_obj(float_, send_size) - send_size
-			# send_size += float_size
-
 			link.send(send_size)
 
 			while not link.available():
@@ -163,13 +140,6 @@ while True:
 
 			print('RCVD: {}'.format(rec_list_))
 
-			# gabung = str(int(x)) + "*" + str(int(y))
-			# print(gabung)
-			# value = esp32.write_read(gabung)
-			# esp32.write(gabung.encode())
-			# # time.sleep(0.01)
-			# data = esp32.readline()
-			# print(data)
 		else:
 			# reset the points from the camera
 			x_p = np.array([0]).reshape((-1, 1))
@@ -191,8 +161,7 @@ while True:
 
     # loop over the set of tracked points
 	for i in range(1, len(pts)):
-		# if either of the tracked points are None, ignore
-		# them
+		# if either of the tracked points are None, ignore them
 		if pts[i - 1] is None or pts[i] is None:
 			continue
 		# otherwise, compute the thickness of the line and
