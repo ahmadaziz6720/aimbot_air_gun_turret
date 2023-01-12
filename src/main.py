@@ -125,9 +125,6 @@ while True:
 			x_p = np.append(x_p, int(x)).reshape((-1, 1))
 			y_p = np.append(y_p, int(y))
 
-			#print how many points we have
-			# print("x_p = ", x_p, "y_p = ", y_p
-
 			#store last 10 points
 			# x_data.append(int(x))
 			# y_data.append(int(y))
@@ -137,6 +134,10 @@ while True:
 			
 			# x_avg = sum(x_data)/len(x_data)
 			# y_avg = sum(y_data)/len(y_data)
+
+			#update kecepatan x
+
+
 
 			list_ = [int(x), int(y)]
 			list_size = link.tx_obj(list_)

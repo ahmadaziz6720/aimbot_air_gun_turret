@@ -17,7 +17,7 @@ Servo pitch;
 int read_pot1;
 int read_pot2;
 
-float sudut_yaw = 90.0;
+float sudut_yaw = 120.0;
 float sudut_pitch = 90.0;
 
 float increment = 0.25;
@@ -45,7 +45,7 @@ void setup(){
 
     //default position
     trig.write(90); //stanby = 90; tembak = 100;
-    yaw.write(90);
+    yaw.write(130);
     pitch.write(90);
 
     delay(10000);
@@ -100,8 +100,8 @@ void loop(){
 		 //stanby = 90; tembak = 100;
 		X1[0] = -1;
 		X1[1] = -1;
-		delay(2000);
-		yaw.write(95);
+		delay(1000);
+		yaw.write(130);
 		pitch.write(100);
 		delay(500);
 		trig.write(100);
