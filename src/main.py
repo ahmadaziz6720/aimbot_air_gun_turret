@@ -10,6 +10,8 @@ import cv2
 import imutils
 import time
 
+from scipy.signal import lfilter
+
 # serial communication
 from pySerialTransfer import pySerialTransfer as txfer
 link = txfer.SerialTransfer('COM6')
@@ -63,6 +65,12 @@ else:
 # allow the camera or video file to warm up
 time.sleep(5.0)
 
+# last 10 points
+x_data = []
+y_data = []
+
+start_time = time.time_ns()
+
 while True:
 	send_size = 0
 
@@ -94,6 +102,9 @@ while True:
 	center = None
 	# only proceed if at least one contour was found
 	if len(cnts) > 0:
+		time_taken = (time.time_ns()-start_time)/1000000
+		start_time = time.time_ns()
+
 		# find the largest contour in the mask, then use
 		# it to compute the minimum enclosing circle and
 		# centroid
@@ -115,7 +126,17 @@ while True:
 			y_p = np.append(y_p, int(y))
 
 			#print how many points we have
-			# print("x_p = ", x_p, "y_p = ", y_p)
+			# print("x_p = ", x_p, "y_p = ", y_p
+
+			#store last 10 points
+			# x_data.append(int(x))
+			# y_data.append(int(y))
+			# if len(x_data) > 10:
+			# 	x_data.pop(0)
+			# 	y_data.pop(0)
+			
+			# x_avg = sum(x_data)/len(x_data)
+			# y_avg = sum(y_data)/len(y_data)
 
 			list_ = [int(x), int(y)]
 			list_size = link.tx_obj(list_)
@@ -138,7 +159,7 @@ while True:
                                      obj_byte_size=list_size,
                                      list_format='i')
 
-			print('RCVD: {}'.format(rec_list_))
+			print('RCVD: {}'.format( rec_list_))
 
 		else:
 			# reset the points from the camera
@@ -156,8 +177,8 @@ while True:
 	pts.appendleft(center)
 
 	# make the point green color from the prediction
-	for i in range(len(x_pred)):
-		cv2.circle(frame, (int(x_pred[i]), int(y_pred[i])), 5, (0, 255, 0), -1)
+	# for i in range(len(x_pred)):
+	# 	cv2.circle(frame, (int(x_pred[i]), int(y_pred[i])), 5, (0, 255, 0), -1)
 
     # loop over the set of tracked points
 	for i in range(1, len(pts)):
