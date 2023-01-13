@@ -55,6 +55,8 @@ void setup(){
 void loop(){
 
 	if(myTransfer.available()){
+
+	
 		
 		uint16_t recSize = 0;
 		recSize = myTransfer.rxObj(X1, recSize);
@@ -65,6 +67,8 @@ void loop(){
 		myTransfer.sendData(sendSize);
 		X2[0] = sudut_yaw;
 		X2[1] = sudut_pitch;
+
+		//131 99
 
 		if(millis() - start_man < 15000){
 		if(x < 280){
@@ -98,28 +102,16 @@ void loop(){
 		// delay(15);
 		}else{
 		 //stanby = 90; tembak = 100;
-		X1[0] = -1;
-		X1[1] = -1;
-		delay(1000);
-		yaw.write(130);
-		pitch.write(100);
-		delay(500);
-		trig.write(100);
-		delay(1000);
-		trig.write(90);
-		start_man = millis();
+			X1[0] = -1;
+			X1[1] = -1;
+			delay(1000);
+			yaw.write(130);
+			pitch.write(100);
+			delay(500);
+			trig.write(100);
+			delay(5000);
+			trig.write(90);
+			start_man = millis();
 		}
 	} 
-
-	// else{
-	// 	read_pot1 = analogRead(pot1); // 48-138 pitch
-	// 	read_pot2 = analogRead(pot2); // 3-180 yaw
-	// 	trig.write(map(read_pot2, 0, 4095, 0, 180)); //stanby = 90; tembak = 100;
-	// 	yaw.write(map(read_pot2, 0, 4095, 0, 180));
-	// 	pitch.write(map(read_pot1, 0, 4095, 0, 180));
-	// 	Serial.print(map(read_pot2, 0, 4095, 0, 180));
-	// 	Serial.print(" < ");
-	// 	Serial.println(map(read_pot1, 0, 4095, 0, 180));
-	// 	delay(10);
-	// }
 }

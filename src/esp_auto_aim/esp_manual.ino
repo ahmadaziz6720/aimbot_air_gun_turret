@@ -92,16 +92,16 @@ void loop(){
 
 
 //    while (!Serial.available()){
-//       read_pot1 = analogRead(pot1); // 48-138 pitch
-//       read_pot2 = analogRead(pot2); // 3-180 yaw
-////       trig.write(map(read_pot2, 0, 4095, 0, 180)); //stanby = 90; tembak = 100;
-//       yaw.write(map(read_pot2, 0, 4095, 0, 180));
-//       pitch.write(map(read_pot1, 0, 4095, 0, 180));
-//       Serial.print(map(read_pot2, 0, 4095, 0, 180));
-//       Serial.print(" < ");
-//       Serial.println(map(read_pot1, 0, 4095, 0, 180));
-//       delay(10);
-//    }
+      read_pot1 = analogRead(pot1); // 48-138 pitch
+      read_pot2 = analogRead(pot2); // 3-180 yaw
+//       trig.write(map(read_pot2, 0, 4095, 0, 180)); //stanby = 90; tembak = 100;
+      yaw.write(map(read_pot2, 0, 4095, 0, 180));
+      pitch.write(map(read_pot1, 0, 4095, 0, 180));
+      Serial.print(map(read_pot2, 0, 4095, 0, 180));
+      Serial.print(" < ");
+      Serial.println(map(read_pot1, 0, 4095, 0, 180));
+      delay(10);
+   }
 //    xy = Serial.readString();
 //    i = xy.indexOf("*");
 //  

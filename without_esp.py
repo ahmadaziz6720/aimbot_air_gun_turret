@@ -14,8 +14,8 @@ from scipy.signal import lfilter
 
 # serial communication
 from pySerialTransfer import pySerialTransfer as txfer
-link = txfer.SerialTransfer('COM6')
-link.open()
+# link = txfer.SerialTransfer('COM6')
+# link.open()
 time.sleep(2)
 
 # for motion prediction
@@ -125,6 +125,12 @@ while True:
 			x_p = np.append(x_p, int(x)).reshape((-1, 1))
 			y_p = np.append(y_p, int(y))
 
+			if (int(x) != prev_x):
+				time_taken = (time.time_ns()-start_time)/1000000
+				speed_x = (int(x) - prev_x)/time_taken
+				prev_x = int(x)
+				start_time = time.time_ns()
+
 			#store last 10 points
 			# x_data.append(int(x))
 			# y_data.append(int(y))
@@ -136,30 +142,27 @@ while True:
 			# y_avg = sum(y_data)/len(y_data)
 
 			#update kecepatan x
-			time_taken = (time.time_ns()-start_time)/1000000
-			speed_x = (int(x) - prev_x)/time_taken
-			prev_x = int(x)
-			start_time = time.time_ns()
-			
+            
 
 
 
-			list_ = [int(x), int(y)]
-			list_size = link.tx_obj(list_)
-			send_size += list_size
 
-			link.send(send_size)
+			# list_ = [int(x), int(y)]
+			# list_size = link.tx_obj(list_)
+			# send_size += list_size
 
-			while not link.available():
-				if link.status < 0:
-					if link.status == txfer.CRC_ERROR:
-						print('ERROR: CRC_ERROR')
-					elif link.status == txfer.PAYLOAD_ERROR:
-						print('ERROR: PAYLOAD_ERROR')
-					elif link.status == txfer.STOP_BYTE_ERROR:
-						print('ERROR: STOP_BYTE_ERROR')
-					else:
-						print('ERROR: {}'.format(link.status))
+			# link.send(send_size)
+
+			# while not link.available():
+			# 	if link.status < 0:
+			# 		if link.status == txfer.CRC_ERROR:
+			# 			print('ERROR: CRC_ERROR')
+			# 		elif link.status == txfer.PAYLOAD_ERROR:
+			# 			print('ERROR: PAYLOAD_ERROR')
+			# 		elif link.status == txfer.STOP_BYTE_ERROR:
+			# 			print('ERROR: STOP_BYTE_ERROR')
+			# 		else:
+			# 			print('ERROR: {}'.format(link.status))
 
 			# rec_list_  = link.rx_obj(obj_type=type(list_),
             #                          obj_byte_size=list_size,
